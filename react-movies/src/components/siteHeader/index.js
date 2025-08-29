@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -11,6 +11,9 @@ import { useNavigate } from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { AuthContext } from "../../contexts/authContext";
+import LoginPage from "./login";
+import SignupPage from "./signup";
 
 const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 
@@ -20,6 +23,8 @@ const SiteHeader = ({ history }) => {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  const context = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -42,7 +47,7 @@ const SiteHeader = ({ history }) => {
   };
 
 
-  //    "My Lists" dropdown states & handlers (Menu starts line 125)
+  //    "My Lists" dropdown states & handlers (Menu starts line 169)
   const [dropdownAnchorEl, setDropdownAnchorEl] = useState(null);
   const dropdownOpen = Boolean(dropdownAnchorEl);
 
@@ -58,6 +63,46 @@ const SiteHeader = ({ history }) => {
     handleDropdownClose();
     navigate(pageURL, { replace: true });
   };
+
+  //    "Account" dropdown states and handlers (Menu starts line 216)
+
+  const [accountDropdownAnchorEl, setAccountDropdownAnchorEl] = useState(null);
+  const accountDropdownOpen = Boolean(accountDropdownAnchorEl);
+
+  const handleAccountDropdownClick = (event) => {
+    setAccountDropdownAnchorEl(event.currentTarget);
+  }
+
+  const handleAccountDropdownClose = () => {
+    setAccountDropdownAnchorEl(null);
+  }
+
+  //    States for Login and Signup dialogue boxes
+  const [loginOpen, setLoginOpen] = useState(false);
+
+  const handleLoginOpen = () => {
+    setLoginOpen(true);
+  };
+
+  const handleLoginClose = () => {
+    setLoginOpen(false);
+  };
+
+  const [signupOpen, setSignupOpen] = useState(false);
+
+  const handleSignupOpen = () => {
+    setSignupOpen(true);
+  };
+
+  const handleSignupClose = () => {
+    setSignupOpen(false);
+  };
+
+
+  const handleSignOut = () => {
+    context.signout();
+  }
+
 
 
 
@@ -155,6 +200,66 @@ const SiteHeader = ({ history }) => {
               </MenuItem>
             </Menu>
           </div>
+          {/* {!context.isAuthenticated && (                          ///////////////////////////////////////////////////////////////////////////////////// 
+            <Button color="inherit" onClick={handleLoginOpen}>        /// Conditional check for login of user for display of login and sign up buttons. ///
+          Login                                                       /// Depreciated and refactored for use in dropdown menu for buttons.              ///
+        </Button>                                                     /////////////////////////////////////////////////////////////////////////////////////
+          )}
+          <LoginPage open={loginOpen} onClose={handleLoginClose} />
+          {!context.isAuthenticated && (
+        <Button color="inherit" onClick={handleSignupOpen}>
+          Sign Up
+        </Button>
+      )}
+      <SignupPage open={signupOpen} onClose={handleSignupClose} /> */}
+          {!context.isAuthenticated && (
+            <div>
+              <Button
+                id="accountDropdown-button"
+                aria-controls={accountDropdownOpen ? 'accountDropdown-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={accountDropdownOpen ? 'true' : undefined}
+                onClick={handleAccountDropdownClick}
+                color="inherit"
+              >
+                Account
+              </Button>
+              <Menu
+                id="accountDropdown-menu"
+                aria-labelledby="accountDropdown-button"
+                anchorEl={accountDropdownAnchorEl}
+                open={accountDropdownOpen}
+                onClose={handleAccountDropdownClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+              >
+                <MenuItem onClick={handleLoginOpen}>
+                  Login
+                </MenuItem>
+                <LoginPage open={loginOpen} onClose={handleLoginClose} />
+                <MenuItem onClick={handleSignupOpen}>
+                  Sign Up
+                </MenuItem>
+                <SignupPage open={signupOpen} onClose={handleSignupClose} />
+              </Menu>
+            </div>
+          )}
+          {context.isAuthenticated ? (
+            <>
+              <Typography variant="body1" sx={{ ml: 2 }}>
+                Welcome {context.userName}!
+              </Typography>
+              <Button color="inherit" onClick={handleSignOut}>
+                Sign out
+              </Button>
+            </>
+          ) : null}
         </Toolbar>
       </AppBar>
       <Offset />

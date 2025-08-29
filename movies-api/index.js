@@ -18,7 +18,8 @@ app.use(express.json());
 app.use('/api/users', usersRouter);
 app.use('/api/movies', moviesRouter);
 app.use(defaultErrHandler);
-app.use('/api/movies', authenticate, moviesRouter);
+app.use('/api/movies/upcoming', authenticate, moviesRouter);
+app.use('/api/movies', moviesRouter);
 
 app.listen(port, () => {
   console.info(`Server running at ${port}`);

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -12,15 +12,18 @@ import StarRateIcon from "@mui/icons-material/StarRate";
 import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
 import img from '../../images/film-poster-placeholder.png'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Avatar from '@mui/material/Avatar';
 import { MoviesContext } from "../../contexts/moviesContext";
 import PlaylistAddCheckCircleIcon from '@mui/icons-material/PlaylistAddCheckCircle';
 import Stack from "@mui/material/Stack";
 import AvatarGroup from "@mui/material/AvatarGroup";
+import { AuthContext } from "../../contexts/authContext";
+import LoginPage from "../siteHeader/login";
 
 export default function MovieCard({ movie, action }) {
   const { favorites, addToFavorites } = useContext(MoviesContext);
+
 
   if (favorites.find((id) => id === movie.id)) {
     movie.favorite = true;
@@ -44,6 +47,23 @@ export default function MovieCard({ movie, action }) {
   const handleAddToWatchlist = (e) => {
     e.preventDefault();
     addToWatchList(movie);
+  };
+
+  const { isAuthenticated } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [loginOpen, setLoginOpen] = useState(false);
+
+
+  const handleMovieDetailsClick = () => {
+    if (!isAuthenticated) {
+      setLoginOpen(true)
+    } else {
+      navigate(`/movies/${movie.id}`);
+    }
+  };
+
+  const handleLoginClose = () => {
+    setLoginOpen(false);
   };
 
   return (
@@ -98,11 +118,9 @@ export default function MovieCard({ movie, action }) {
         {action(movie)}
 
         <Stack direction="column" spacing={1}>
-          <Link to={`/movies/${movie.id}`}>
-            <Button variant="outlined" size="medium" color="primary">
-              More Info ...
-            </Button>
-          </Link>
+          <Button variant="outlined" size="medium" color="primary" onClick={handleMovieDetailsClick}>
+            More Info ...
+          </Button>
           <Link to={`/movies/${movie.id}/recommendations`}>
             <Button variant="outlined" size="medium" color="primary">
               Recommendations...
@@ -111,6 +129,7 @@ export default function MovieCard({ movie, action }) {
         </Stack>
 
       </CardActions>
+      <LoginPage open={loginOpen} onClose={handleLoginClose} />
     </Card>
   );
 }

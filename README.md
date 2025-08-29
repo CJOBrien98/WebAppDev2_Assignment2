@@ -4,50 +4,63 @@ Name: Conor O'Brien
 
 ## Features.
 
-A bullet-point list of the ADDITIONAL features you have implemented in the API **THAT WERE NOT IN THE LABS** (or modifications to existing features)
- 
- + Feature 1 
- + Feature 2 
- + Feature 3 
- + etc
+ + All traffic from the React App that requires information from TMDB is now routed through the API (both static and param endpoints)
 
 ## Setup requirements.
 
-[ Outline any non-standard setup steps necessary to run your app locally after cloning the repo.]
+ - Navigate to react-app dir in terminal
+ - Run command "npm install --force" as some modules are not updated for the latest version of node
+ - Navigate to movies-app dir in terminal
+ - Run command "npm install"
 
 ## API Configuration
 
-Describe any configuration that needs to take place before running the API. For example, creating an `.env` file and what variables to put in it. Give an example of how this might be done.
+2 .env files are needed containing the following:
 
-REMEMBER: DON'T PUT YOUR OWN USERNAMES/PASSWORDS/AUTH KEYS IN THE README OR ON GITHUB, just placeholders as indicated below:
 
+Location:/movies-api
 ______________________
 NODEENV=development
 PORT=8080
-HOST=
+HOST=localhost
 mongoDB=YourMongoURL
-seedDb=true
+TMDB_KEY=YourTMDBKey
 secret=YourJWTSecret
 ______________________
 
+Location:/react-movies
+______________________
+FAST_REFRESH=false
+______________________
+
+
 ## API Design
-Give an overview of your web API design, perhaps similar to the following: 
 
-- /api/movies | GET | Gets a list of movies 
-- /api/movies/{movieid} | GET | Gets a single movie 
-- /api/movies/{movieid}/reviews | GET | Get all reviews for movie 
-- /api/movies/{movieid}/reviews | POST | Create a new review for Movie 
-
-If you have your API design on an online platform or graphic, please link to it (e.g. [Swaggerhub](https://app.swaggerhub.com/)).
+- /api/tmdb/movies | GET | Gets a list of movies 
+- /api/tmdb/movies/{id} | GET | Gets a single movie 
+- /api/tmdb/movies/{id}/reviews | GET | Get all reviews for movie 
+- /api/tmdb/:id/images  | GET | Gets movie images
+- /api/tmdb/movies/:id/recommended | GET | Gets a list of recommended movies based on one selected
+- /api/tmdb/popular | GET | Gets a list of popular movies
+- /api/tmdb/now_playing | GET | Gets a list of movies now playing in cinemas
+- /api/tmdb/genres | GET | Gets a list of movie genres
+- /api/tmdb/upcoming | GET | Gets a list of upcoming movies
+- /api/users | POST | Add a user to the user DB
+- /api/users/{id} | GET | Gets a user
 
 ## Security and Authentication
 
-Give details of authentication/security implemented on the API (e.g. passport/sessions). Indicate which routes are protected.
+The API used JWT to encrypt user data.
+
+Movie info route requires login.
 
 ## Integrating with React App
 
-Describe how you integrated your React app with the API. List the views that use your Web API instead of the TMDB API. Describe any other updates to the React app from Assignment One.
+All views besides favorites and watchlist use the Web API.
+
+General integration with the react app used in the API labs to allow for user functionality/authentication and calls to the Web API.
 
 ## Independent learning (if relevant)
 
-Briefly explain any non-standard features developed for the app.
+MUI dialogue box opens in the middle of the screen when logging in, signing up or try to access a feature that's locked behind a login.
+conditional displaying of these buttons based on whether a user is logged in or not.
